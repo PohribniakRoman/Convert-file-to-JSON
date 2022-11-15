@@ -12,7 +12,7 @@
     </style>
 </head>
 <body>
-    <form method="post" id="form" action="/send_file">
+    <form id="form">
         <input type="file" name="file">
         <button type="submit">send</button>
     </form>
@@ -23,7 +23,7 @@
         <p>Content type: <b id="content_type">no data</b>;</p>
         <p>Size: <b id="size">no data</b>;</p>
     </div>
-
+    <a href="" download="" id="download" target="_blank">download</a>
     <script>
         document.getElementById("form").addEventListener("submit",(e)=>{
             e.preventDefault();
@@ -34,7 +34,18 @@
             document.getElementById("lastModified").innerHTML = new Date(file.lastModified).toDateString() +" / "+  new Date(file.lastModified).toLocaleTimeString();
             document.getElementById("content_type").innerHTML = file.type;
             document.getElementById("size").innerHTML = file.size+" Bytes";
+            const formData = new FormData();
+            formData.append("file",file);
+            async function sendData() {
+                const data = await (await fetch("http://localhost:5000/send_file",{
+                    method:"POST",
+                    body:formData
+                })).json()
+                document.getElementById("download").href = "compressed img.img";
+                document.getElementById("download").download = "compressed img.img";
             }
+            sendData();
+        }
         })
     </script>
 </body>
