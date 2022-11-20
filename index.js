@@ -16,18 +16,7 @@ app.get("/",(req,res)=>{
 
 app.post("/send_file",(req,res)=>{
     const {file} = req.files;
-    fs.writeFile("compressed_img",file.data,(err)=>{
-        if(err) throw err;
-    })    
-    Jimp.read("compressed_img",(err,photo)=>{
-        if(err) throw err;
-        photo.resize(256,256).quality(100).write("compressed_img.jpg");
-    })
-    res.send(JSON.stringify({path:"compressed_img.jpg"})).status(200);
-})
-
-app.get("/compressed_img.jpg",(req,res)=>{
-    res.sendFile(path.resolve(__dirname+"/compressed_img.jpg"))
+    res.send(JSON.stringify(JSON.stringify(file.data))).status(200);
 })
 
 app.listen(PORT ,()=>{console.log(`Server has been started on port: ${PORT}...`);});

@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>IMG to JSON</title>
     <style>
-        b{
-            font-family: consolas;
+        *{
+            box-sizing: border-box;
+            font-family: consolas !important;
         }
     </style>
 </head>
@@ -23,13 +24,11 @@
         <p>Content type: <b id="content_type">no data</b>;</p>
         <p>Size: <b id="size">no data</b>;</p>
     </div>
-    <a href="" download="" id="download" target="_blank">download</a>
     <script>
         document.getElementById("form").addEventListener("submit",(e)=>{
             e.preventDefault();
             if(e.target.file.value){
             const file = e.target.file.files[0];
-            console.log(e.target.file.files[0]);
             document.getElementById("name").innerHTML = file.name;
             document.getElementById("lastModified").innerHTML = new Date(file.lastModified).toDateString() +" / "+  new Date(file.lastModified).toLocaleTimeString();
             document.getElementById("content_type").innerHTML = file.type;
@@ -41,8 +40,18 @@
                     method:"POST",
                     body:formData
                 })).json()
-                document.getElementById("download").href = "compressed img.img";
-                document.getElementById("download").download = "compressed img.img";
+                const blob = new Blob([data],{type:"application/json"})
+                const href = URL.createObjectURL(blob);
+
+                const a = Object.assign(document.createElement("a"),{
+                    href,
+                    style:"dssplay:none",
+                    download:"result.json"
+                })
+                document.body.appendChild(a);
+                a.click();
+                URL.revokeObjectURL(blob);
+                a.remove();
             }
             sendData();
         }
